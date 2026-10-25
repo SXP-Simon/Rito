@@ -134,7 +134,9 @@ impl FloatBands {
         }
         let left_inset = self.left_edge(flow_y);
         let right_inset = (content_width - self.right_edge(flow_y, content_width)).max(0.0);
-        if left_inset + right_inset <= 0.0 || left_inset + right_inset >= content_width {
+        // A full band must reach nested containers too. Their first line
+        // steps below it; dropping it here would let descendants overlap.
+        if left_inset + right_inset <= 0.0 {
             return None;
         }
         Some(rito_fragment::FloatBand {
